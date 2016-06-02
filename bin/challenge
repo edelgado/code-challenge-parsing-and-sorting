@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+# Load classes
+project_root = File.dirname(File.expand_path("..", __FILE__))
+Dir.glob(project_root + '/lib/**/*.rb', &method(:require))
+
+# Import students
+comma_file  = File.expand_path("../../data/comma.txt" , __FILE__)
+dollar_file = File.expand_path("../../data/dollar.txt", __FILE__)
+pipe_file   = File.expand_path("../../data/pipe.txt"  , __FILE__)
+
+students = []
+students << Registrar::CommaImporter.import(file_path: comma_file)
+students << Registrar::DollarImporter.import(file_path: dollar_file)
+students << Registrar::PipeImporter.import(file_path: pipe_file)
+students.flatten!
+
+# Output 1: Sorted by campus (ascending), then by last_name (ascending)
+puts "Output 1:"
+output = students.sort_by{ |s| [s.campus, s.last_name] }.map(&:to_s).join("\n")
+puts output
+
+# Output 2: Sorted by date_of_birth (ascending)
+puts "\nOutput 2:"
+output = students.sort_by{ |s| s.date_of_birth }.map(&:to_s).join("\n")
+puts output
+
+# Output 3: Sorted by last_name (descending)
+puts "\nOutput 3:"
+output = students.sort{|a,b| b.last_name <=> a.last_name }.map(&:to_s).join("\n")
+puts output
